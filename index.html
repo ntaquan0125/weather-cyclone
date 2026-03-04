@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Diffusion models for cycle-consistent weather editing from unpaired driving images and videos">
+  <meta name="keywords" content="Diffusion, Weather Synthesis">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cyclone</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./packages/definitive-image-comparison-slider-master/src/dics.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./packages/definitive-image-comparison-slider-master/src/dics.js"></script>
+
+  <!--MathJax-->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', domReady);
+
+    function domReady() {
+
+      var b = document.querySelectorAll('.b-dics');
+      b.forEach(element =>
+        new Dics({
+          container: element,
+          textPosition: 'top'
+        })
+      );
+    } 
+  </script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">Diffusion models for cycle-consistent weather editing from unpaired driving data
+          <!-- <h2 class="subtitle is-3" style="margin-top:1rem">ECCV 2026</h2> -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=epUgvTAAAAAJ">Thang-Anh-Quan Nguyen</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=S3zYmOYAAAAJ">Nathan Piasco</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=bRgp2lUAAAAJ">Luis Roldão</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=0jLPiLYAAAAJ">Moussab Bennehar</a><sup>1</sup>,
+            </span>
+            <br>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=fjUPMcYAAAAJ">Dzmitry Tsishkou</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=N0YTGr8AAAAJ">Laurent Caraffa</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=iOzz0lcAAAAJ">Jean-Philippe Tarel</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=Acsb3SkAAAAJ">Roland Brémond</a><sup>2</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Noah's Ark, Huawei Paris Research Center, France</span><br>
+            <span class="author-block"><sup>2</sup>COSYS, Gustave Eiffel University, France</span><br>
+            <span class="author-block"><sup>3</sup>LASTIG, IGN-ENSG, Gustave Eiffel University, France</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!-- <span class="link-block">
+                <a href="./supmat.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Supplementary</span>
+                </a>
+              </span> -->
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+              <!-- Code Link.
+              <span class="link-block">
+                <a href="https://github.com/"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop is-centered has-text-centered">
+    <div class="hero-body">
+      <img src="./static/images/teaser.png"/>
+      <p>
+        <strong>All-in-One Realistic Weather Editing.</strong> We introduce Cyclone, a diffusion-based framework for weather editing in autonomous driving. 
+        It can both synthesize high-fidelity diverse weather conditions (left) and remove adverse effects (right) from images and videos. 
+        In particular, this is achieved without requiring any ground-truth paired data during training.        
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          Robust perception under diverse weather conditions is a major challenge in autonomous driving systems.
+          A common strategy is to improve robustness by synthesizing adverse weather for training perception models or by applying weather-removal techniques to recover clean inputs. 
+          Existing approaches either rely on physics-based, task-specific models or on data-augmentation methods that require paired training samples, and often fail to synthesize realistic weather effects or preserve scene structure in out-of-domain scenarios. 
+          We present Cyclone, a unified framework for weather editing based on latent diffusion, enhanced with cycle-consistent training and knowledge from image-text models.
+          Cyclone enables the synthesis of multiple weather conditions across diverse scenes without requiring paired training data. 
+          Furthermore, the model is used to generate pseudo ground-truth data for paired sequences, enabling the fine-tuning of a video diffusion model for temporally consistent editing. 
+          Experimental results demonstrate that our approach produces more realistic, structure-preserving outputs than existing baselines and leads to consistent improvements across several downstream driving perception tasks.
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop has-text-centered">
+    <h2 class="title is-3">Results</h2>
+    <h3 class="title is-4">Adding and removing weather ☀️🌫️🌧️❄️🌙</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        Cyclone is a task-agnostic, all in one weather (clear, fog, rainy, snowy, night) editing model.
+      </p>   
+      <image src="./static/images/abbey_road.png" width="70%"  ></image>
+    </div>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content">    
+          <div class="b-dics">
+            <img src="./static/images/multi_weather/waymo_input.png" alt="Input">
+            <img src="./static/images/multi_weather/waymo_foggy_day.jpg" alt="Foggy day">
+            <img src="./static/images/multi_weather/waymo_foggy_night.jpg" alt="Foggy night">
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="content">    
+          <div class="b-dics">
+            <img src="./static/images/multi_weather/waymo_input.png" alt="Input">
+            <img src="./static/images/multi_weather/waymo_snowy_day.jpg" alt="Snowy day">
+            <img src="./static/images/multi_weather/waymo_snowy_night.jpg" alt="Snowy night">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content">    
+          <div class="b-dics">
+            <img src="./static/images/multi_weather/opendv_input.png" alt="Input">
+            <img src="./static/images/multi_weather/opendv_snowy_day.png" alt="Snowy day">
+            <img src="./static/images/multi_weather/opendv_clear_night.png" alt="Clear night">
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="content">    
+          <div class="b-dics">
+            <img src="./static/images/multi_weather/opendv_input.png" alt="Input">
+            <img src="./static/images/multi_weather/opendv_clear_day.png" alt="Clear day">
+            <img src="./static/images/multi_weather/opendv_foggy_day.png" alt="Foggy day">
+            <img src="./static/images/multi_weather/opendv_rainy_day.png" alt="Rainy day">
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">From single images to videos</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        It can be extended to video inference by generating pseudo GT for paired sequence and fine-tuning of a SVD model for temporally consistent editing.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/nuscenes_0440_clear_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/vkitti_06_snowy_night.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">From single-view to multi-view</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        In driving datasets, cameras are typically positioned in a structured left-front-right arrangement, providing shared information across views.
+        We simply stack the multi-view images without any view-specific design as the self-attention layers ensure that each viewpoint aggregates information from the others.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/waymo_14118_snowy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/waymo_17065_foggy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/waymo_26099_clear_night.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/nuscenes_0901_snowy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/panda_001_rainy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>    
+    <h3 class="title is-4">On both synthetic and real life</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        We train and evaluate on both synthetic and real-world datasets, demonstrating its ability to generalize across different domains.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/shift_clear_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/shift_clear_night.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/shift_foggy_night.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/vkitti_06_clear_day.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">On famous driving datasets</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        Cyclone can be applied to many driving datasets (e.g., KITTI, nuScenes, Pandaset, Waymo, etc.), allowing perception systems to be tested on more scenarios.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/kitti_0000_snowy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/nuscenes_0444_rainy_night.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/panda_011_foggy_day.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">And cities across the world, regardless of day or night</h3>
+    <div>
+      <!-- <p class="has-text-centered" style="margin-bottom: 1.5rem">
+
+      </p>       -->
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/paris_clear_day.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/bdd100k_foggy_night.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">We outperform SoTA unpair editing techiques</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        SoTA methods usually focus on object-centric editing and do not work percisely for weather in driving scenarios.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/bdd100k_01_vs_tokenflow.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%">
+            <source src="./static/videos/nuscenes_0440.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">While being smaller, faster, and more efficient than general instruction-based editing models trained on paired data</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        Instruction-based editing models relied on hand-crafted paired data, which is infeasible to obtain in this case and often fails to capture the complexity of real-world weather conditions.
+        Competitive results can be achieved with orders of magnitude lower resources: <strong>20x</strong> smaller model size, <strong>1000x</strong> less training data, and <strong>100x</strong> faster inference speed.
+      </p>
+      <div id="results-carousel-dl3dv" class="carousel results-carousel">
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%" onloadedmetadata="this.playbackRate = 0.5">
+            <source src="./static/videos/waymo_vs_omnigen.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%" onloadedmetadata="this.playbackRate = 0.5">
+            <source src="./static/videos/waymo_14118_vs_bagel.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video autoplay muted loop playsinline height="100%" onloadedmetadata="this.playbackRate = 0.5">
+            <source src="./static/videos/pandaset_vs_qwen.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+    <br>
+    <h3 class="title is-4">Improve upon driving downstream tasks</h3>
+    <div>
+      <p class="has-text-centered" style="margin-bottom: 1.5rem">
+        Removing adverse weather effects can improve the performance of downstream perception tasks by providing clearer inputs to the models.
+      </p>
+    <div id="results-carousel-downstream-tasks" class="carousel results-carousel">
+      <div class="item">
+        <div class="b-dics">
+          <img src="./static/images/downstream_tasks/00000200_img_front_before.png" alt="Before">
+          <img src="./static/images/downstream_tasks/00000200_img_front_after.png" alt="After">
+        </div>
+      </div>
+      <div class="item">
+        <div class="b-dics">
+          <img src="./static/images/downstream_tasks/GP030176_frame_000569_rgb_anon_before.png" alt="Before">
+          <img src="./static/images/downstream_tasks/GP030176_frame_000569_rgb_anon_after.png" alt="After">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop has-text-centered">
+    <h2 class="title is-3">Method</h2>
+    <div class="hero-body">
+      <img src="./static/images/method_overview.png" width="100%"/>
+    </div>
+    <div class="container has-text-justified"> 
+      Our image translation pipeline includes a forward translation from $x_t$ to $\bar{y}$, conditioned on the text prompt $c_y$ and input image $x_0$, followed by a backward translation from $y_t$ to $\bar{x}$, conditioned on $c_x$ and $\bar{y}$. 
+      We enforce this cycle consistency using $\mathcal{L}_{\text{recon}}$ and $\mathcal{L}_{\text{cycle}}$. 
+      To further stabilize training and prevent collapse to the trivial identity mapping, we introduce a teacher model $D_\phi$ that provides regularization.
+      The teacher is initialized with the same weights as the student model and is subsequently updated using an EMA of the student parameters.
+      Notably, we use the same student model $D_\theta$ across multiple transitions.      
+    </div>
+    <div class="hero-body">
+      <img src="./static/images/convergence_analysis.png" width="80%"/>
+    </div>
+    <div class="container has-text-justified"> 
+      Cyclone quickly converges to a stable solution, while the baseline which has no regularization collapses to the trivial identity mapping, requiring early stopping.
+    </div>
+    <div class="hero-body">
+      <img src="./static/images/image_vs_video.png" width="80%"/>
+    </div>
+    <div class="container has-text-justified"> 
+      Cyclone-V equipped with temporal attention not only maintains the editing quality of Cyclone-I but also improves consistency throughout the sequence.    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="content">
+        <p>
+          We thank <a
+            href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> for the website template.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
